@@ -6,7 +6,9 @@ import { Navbar } from "@/components/shared/navbar";
 export function NavbarShell() {
   return (
     <Suspense fallback={null}>
-      <Navbar />
+      <div suppressHydrationWarning>
+        <Navbar />
+      </div>
     </Suspense>
   );
 }
