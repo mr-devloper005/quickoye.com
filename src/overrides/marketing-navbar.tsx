@@ -45,9 +45,14 @@ export function MarketingNavbar() {
   const [scrolled, setScrolled] = useState(false)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   const onHome = pathname === '/'
-  const supportEmail = useMemo(() => `support@${SITE_CONFIG.domain}`, [])
+  // Support email removed as per request
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20)
@@ -86,14 +91,6 @@ export function MarketingNavbar() {
 
   const navGroups = useMemo(
     () => [
-      {
-        label: 'Product',
-        items: [
-          { label: 'Profiles', href: '/profile', hint: 'Public bios and avatars' },
-          { label: 'Social bookmarking', href: '/sbm', hint: 'Collections and saved links' },
-          { label: 'Submit a bookmark', href: '/sbm/submit', hint: 'Capture something new' },
-        ],
-      },
       {
         label: 'Resources',
         items: [
@@ -144,41 +141,57 @@ export function MarketingNavbar() {
               </span>
               <div className="min-w-0">
                 <span className="block truncate text-base font-semibold leading-tight sm:text-lg">{SITE_CONFIG.name}</span>
-                <span className={cn('hidden truncate text-[11px] uppercase tracking-[0.18em] sm:block', darkShell ? 'text-white/70' : 'text-black/45')}>
-                  {supportEmail}
-                </span>
+                {/* Support email removed */}
               </div>
             </Link>
           </div>
 
           <div className="hidden min-w-0 flex-1 items-center justify-center gap-1 px-2 lg:flex">
-            {navGroups.map((group) => (
-              <DropdownMenu key={group.label}>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    className={cn(
-                      'gap-1 rounded-[10px] px-3 text-sm font-semibold',
-                      darkShell ? 'text-white hover:bg-white/10 hover:text-white' : 'text-[#1f1418] hover:bg-black/[0.04]',
-                    )}
-                  >
-                    {group.label}
-                    <ChevronDown className="h-4 w-4 opacity-70" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="w-64 rounded-[10px] border-black/10 bg-white p-2 shadow-xl">
-                  {group.items.map((item) => (
-                    <DropdownMenuItem key={item.href} asChild className="rounded-[8px] p-0">
-                      <Link href={item.href} className="flex cursor-pointer flex-col gap-0.5 px-3 py-2">
-                        <span className="text-sm font-semibold text-[#1f1418]">{item.label}</span>
-                        <span className="text-xs text-black/55">{item.hint}</span>
-                      </Link>
-                    </DropdownMenuItem>
-                  ))}
-                </DropdownMenuContent>
-              </DropdownMenu>
-            ))}
+            {mounted ? (
+              navGroups.map((group) => (
+                <DropdownMenu key={group.label}>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      className={cn(
+                        'gap-1 rounded-[10px] px-3 text-sm font-semibold',
+                        darkShell ? 'text-white hover:bg-white/10 hover:text-white' : 'text-[#1f1418] hover:bg-black/[0.04]',
+                      )}
+                    >
+                      {group.label}
+                      <ChevronDown className="h-4 w-4 opacity-70" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="start" className="w-64 rounded-[10px] border-black/10 bg-white p-2 shadow-xl">
+                    {group.items.map((item) => (
+                      <DropdownMenuItem key={item.href} asChild className="rounded-[8px] p-0">
+                        <Link href={item.href} className="flex cursor-pointer flex-col gap-0.5 px-3 py-2">
+                          <span className="text-sm font-semibold text-[#1f1418]">{item.label}</span>
+                          <span className="text-xs text-black/55">{item.hint}</span>
+                        </Link>
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ))
+            ) : (
+              // SSR placeholder - simple links without dropdown
+              navGroups.flatMap((g) => g.items).slice(0, 2).map((item) => (
+                <Button
+                  key={item.href}
+                  type="button"
+                  variant="ghost"
+                  asChild
+                  className={cn(
+                    'rounded-[10px] px-3 text-sm font-semibold',
+                    darkShell ? 'text-white hover:bg-white/10 hover:text-white' : 'text-[#1f1418] hover:bg-black/[0.04]',
+                  )}
+                >
+                  <Link href={item.href}>{item.label}</Link>
+                </Button>
+              ))
+            )}
             <Button
               type="button"
               variant="ghost"
@@ -193,17 +206,6 @@ export function MarketingNavbar() {
           </div>
 
           <div className="hidden shrink-0 items-center gap-2 md:flex">
-            <Button
-              type="button"
-              variant="ghost"
-              asChild
-              className={cn(
-                'rounded-[10px] px-3 text-sm font-semibold',
-                darkShell ? 'text-white hover:bg-white/10 hover:text-white' : 'text-[#1f1418] hover:bg-black/[0.04]',
-              )}
-            >
-              <Link href="/contact">Contact sales</Link>
-            </Button>
             {isAuthenticated ? (
               <NavbarAuthControls />
             ) : (
@@ -259,9 +261,7 @@ export function MarketingNavbar() {
               <Link href="/contact#plans" className="block rounded-[10px] px-3 py-3 text-sm font-semibold hover:bg-black/[0.04]" onClick={() => setMobileOpen(false)}>
                 Pricing
               </Link>
-              <Link href="/contact" className="block rounded-[10px] px-3 py-3 text-sm font-semibold hover:bg-black/[0.04]" onClick={() => setMobileOpen(false)}>
-                Contact sales
-              </Link>
+              {/* Contact sales removed */}
               {!isAuthenticated ? (
                 <div className="flex flex-col gap-2 pt-2">
                   <Button asChild variant="outline" className="rounded-[10px] border-[#4A0E1C]/25">

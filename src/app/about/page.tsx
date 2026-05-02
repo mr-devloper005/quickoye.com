@@ -2,52 +2,53 @@ import Link from 'next/link'
 import { MarketingCtaRow, MarketingPublicShell } from '@/components/marketing/marketing-public-shell'
 import { MarketingSurfaceCard } from '@/components/marketing/marketing-surface-card'
 import { marketingTheme } from '@/components/marketing/marketing-theme'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { mockTeamMembers } from '@/data/mock-data'
 import { SITE_CONFIG } from '@/lib/site-config'
 
 const highlights = [
-  { label: 'Curators active', value: '12k+' },
-  { label: 'Bookmarks surfaced', value: '180k' },
-  { label: 'Profiles published', value: '8.6k' },
+  { label: 'Founded', value: '2024' },
+  { label: 'Focus', value: 'SBM + Profiles' },
+  { label: 'Approach', value: 'Calm UI' },
 ]
 
 const pillars = [
   {
-    title: 'Profiles with intent',
+    title: 'Built for link lovers',
     description:
-      'Public bios, avatars, and bookmark counts tell a story at a glance—so visitors know who you are before they dive into your shelves.',
+      'Quickoye is a social bookmarking platform where you can save, organize, and share links that matter to you. Create collections, add tags, and build your personal library of the web.',
   },
   {
-    title: 'Bookmarks with context',
+    title: 'Your public identity',
     description:
-      'Every link carries a title, summary, and tags so future-you (and your followers) understand why it mattered in the first place.',
+      'Every user gets a public profile showing who they are, what they curate, and their bookmark collections. It is your corner of the internet to showcase your interests and discoveries.',
   },
   {
-    title: 'Community without noise',
+    title: 'Discovery without algorithms',
     description:
-      'We optimize for calm discovery: fewer boxes, clearer hierarchy, and surfaces that reward curation over volume.',
+      'Browse bookmarks and profiles without recommendation engines deciding what you see. Find curators with similar interests and explore their collections organically.',
   },
 ]
 
 export default function AboutPage() {
   return (
     <MarketingPublicShell
-      eyebrow="Company"
-      title={`Why ${SITE_CONFIG.name} exists`}
-      description="We built a dedicated home for profiles and social bookmarking—so your identity and your library stay in sync, without unrelated marketplace clutter."
+      eyebrow="About"
+      title={`What is ${SITE_CONFIG.name}?`}
+      description={`${SITE_CONFIG.name} is a social bookmarking and profile platform. Save links, build your identity, and connect with fellow curators in a clean, distraction-free space.`}
       actions={
-        <MarketingCtaRow primary={{ href: '/profile', label: 'Meet profiles' }} secondary={{ href: '/sbm', label: 'Browse bookmarks' }} />
+        <MarketingCtaRow primary={{ href: '/register', label: 'Create profile' }} secondary={{ href: '/sbm', label: 'Browse bookmarks' }} />
       }
     >
       <div className="grid gap-8 lg:grid-cols-[1.08fr_0.92fr] lg:items-start">
         <MarketingSurfaceCard>
           <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-black/45">Our story</p>
-          <h2 className="mt-3 text-2xl font-semibold tracking-[-0.02em] text-[#1f1418]">Calm software for people who live in links.</h2>
+          <h2 className="mt-3 text-2xl font-semibold tracking-[-0.02em] text-[#1f1418]">A quieter place for bookmarks and profiles.</h2>
           <p className="mt-4 text-sm leading-relaxed text-black/60">
-            Teams and solo curators both need a place to present who they are and what they read. {SITE_CONFIG.name} keeps those two truths
-            together—profiles on the left, collections on the right, and a visual language borrowed from editorial desks instead of ad-heavy
-            directories.
+            {SITE_CONFIG.name} was built to solve a simple problem: bookmarks get lost in browser bars, and profiles on social media 
+            are buried under endless feeds. We wanted a dedicated space where your saved links and your identity coexist peacefully.
+          </p>
+          <p className="mt-4 text-sm leading-relaxed text-black/60">
+            The result is a platform that prioritizes curation over consumption. No infinite scroll, no engagement metrics, 
+            no algorithmic sorting—just you, your collections, and a community of people who care about the same things you do.
           </p>
           <div className="mt-8 grid gap-4 sm:grid-cols-3">
             {highlights.map((item) => (
@@ -71,33 +72,30 @@ export default function AboutPage() {
         </div>
       </div>
 
-      <div className="mt-12 flex flex-wrap items-center justify-between gap-4 border-t border-black/8 pt-10">
-        <div>
-          <h2 className="text-2xl font-semibold text-[#1f1418]">People behind the product</h2>
-          <p className="mt-2 max-w-xl text-sm text-black/60">A small crew obsessed with typography, trust cues, and the feeling of closing a great tab session.</p>
-        </div>
-        <Link href="/team" className="text-sm font-semibold underline-offset-4 hover:underline" style={{ color: marketingTheme.maroon }}>
-          Full team →
-        </Link>
-      </div>
-
-      <div className="mt-8 grid gap-6 md:grid-cols-3">
-        {mockTeamMembers.map((member) => (
-          <MarketingSurfaceCard key={member.id} className="p-5 transition-transform hover:-translate-y-0.5">
-            <div className="flex items-center gap-3">
-              <Avatar className="h-12 w-12 border border-black/8">
-                <AvatarImage src={member.avatar} alt={member.name} />
-                <AvatarFallback>{member.name.charAt(0)}</AvatarFallback>
-              </Avatar>
-              <div>
-                <p className="text-sm font-semibold text-[#1f1418]">{member.name}</p>
-                <p className="text-xs text-black/50">{member.role}</p>
-              </div>
-            </div>
-            <p className="mt-3 text-sm leading-relaxed text-black/60">{member.bio}</p>
-            <p className="mt-3 text-xs text-black/45">{member.location}</p>
+      <div className="mt-12 border-t border-black/8 pt-10">
+        <h2 className="text-2xl font-semibold text-[#1f1418]">How it works</h2>
+        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <MarketingSurfaceCard className="p-5">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#4A0E1C]/10 text-lg font-semibold" style={{ color: marketingTheme.maroon }}>1</div>
+            <h4 className="mt-4 text-base font-semibold text-[#1f1418]">Create your profile</h4>
+            <p className="mt-2 text-sm text-black/60">Sign up and set up your public profile with an avatar, bio, and your areas of interest.</p>
           </MarketingSurfaceCard>
-        ))}
+          <MarketingSurfaceCard className="p-5">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#4A0E1C]/10 text-lg font-semibold" style={{ color: marketingTheme.maroon }}>2</div>
+            <h4 className="mt-4 text-base font-semibold text-[#1f1418]">Save bookmarks</h4>
+            <p className="mt-2 text-sm text-black/60">Add links with titles, descriptions, and tags. Organize them into collections that make sense to you.</p>
+          </MarketingSurfaceCard>
+          <MarketingSurfaceCard className="p-5">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#4A0E1C]/10 text-lg font-semibold" style={{ color: marketingTheme.maroon }}>3</div>
+            <h4 className="mt-4 text-base font-semibold text-[#1f1418]">Share collections</h4>
+            <p className="mt-2 text-sm text-black/60">Make your bookmarks public or keep them private. Share specific collections with others.</p>
+          </MarketingSurfaceCard>
+          <MarketingSurfaceCard className="p-5">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#4A0E1C]/10 text-lg font-semibold" style={{ color: marketingTheme.maroon }}>4</div>
+            <h4 className="mt-4 text-base font-semibold text-[#1f1418]">Discover curators</h4>
+            <p className="mt-2 text-sm text-black/60">Browse profiles, find people with similar interests, and explore their bookmark collections.</p>
+          </MarketingSurfaceCard>
+        </div>
       </div>
     </MarketingPublicShell>
   )

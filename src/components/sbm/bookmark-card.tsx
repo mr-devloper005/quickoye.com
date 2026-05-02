@@ -1,22 +1,17 @@
 ﻿'use client'
 
 import { useEffect, useState } from 'react'
-import Image from 'next/image'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { ArrowUpRight, ArrowUp, Bookmark, MessageSquare, Share2, Clock, Check } from 'lucide-react'
+import { ArrowUpRight, ArrowUp, Bookmark, Share2, Check } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import type { Bookmark as BookmarkType } from '@/types'
 import { cn } from '@/lib/utils'
-import { formatDistanceToNow } from 'date-fns'
 import { useRouter } from 'next/navigation'
 import { loadFromStorage, saveToStorage, storageKeys } from '@/lib/local-storage'
 import { useToast } from '@/components/ui/use-toast'
-
-import { defaultAuthorProfile } from '@/config/site.identity'
 
 
 export function BookmarkCard({
@@ -37,7 +32,7 @@ export function BookmarkCard({
   const [shareLabel, setShareLabel] = useState('Share')
   const router = useRouter()
   const { toast } = useToast()
-  const author = bookmark.author ?? defaultAuthorProfile
+  const author = bookmark.author
 
   useEffect(() => {
     setMounted(true)
@@ -49,12 +44,8 @@ export function BookmarkCard({
   }, [bookmark.id, bookmark.isSaved, savedIds])
 
   const handleUpvote = () => {
-    setIsUpvoted((prev) => !prev)
-    setUpvotes((prev) => (isUpvoted ? prev - 1 : prev + 1))
-    toast({
-      title: isUpvoted ? 'Upvote removed' : 'Upvoted',
-      description: isUpvoted ? 'Removed your vote.' : 'Thanks for voting!',
-    })
+    // Redirect to login for upvoting
+    router.push('/login')
   }
 
   const handleSave = () => {
@@ -83,54 +74,26 @@ export function BookmarkCard({
     }
   }
 
-  const handleComments = () => {
-    router.push(`/sbm/${bookmark.slug}#comments`)
-  }
-
   return (
     <motion.div whileHover={{ y: -4 }} transition={{ duration: 0.2 }}>
       <Card className="group h-full overflow-hidden border-border bg-card transition-all hover:border-muted-foreground/20">
         <Link href={`/sbm/${bookmark.slug}`} className="block">
-          <div className={cn('relative overflow-hidden', compact ? 'aspect-[4/3]' : 'aspect-[16/9]')}>
-            <Image
-              src={bookmark.image}
-              alt={bookmark.title}
-              fill
-              className="object-cover transition-transform duration-300 group-hover:scale-105"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
-            <div className="absolute left-3 top-3 flex items-center gap-2">
-              <Badge className="bg-background/90 text-foreground">
+          <div className={cn('flex items-center justify-between border-b border-border bg-muted/30 px-4 py-3', compact && 'px-3 py-2')}>
+            <div className="flex items-center gap-2">
+              <Badge variant="secondary">
                 {bookmark.category}
               </Badge>
-              <Badge variant="secondary" className="bg-black/60 text-white">
-                {bookmark.domain}
-              </Badge>
+              <span className="text-xs text-muted-foreground">{bookmark.domain}</span>
             </div>
-            <div className="absolute bottom-3 left-3 flex items-center gap-2 text-xs text-white">
-              <Clock className="h-3 w-3" />
-              <span suppressHydrationWarning>
-                {mounted ? formatDistanceToNow(new Date(bookmark.createdAt), { addSuffix: true }) : 'Just now'}
-              </span>
-            </div>
-            <div className="absolute bottom-3 right-3 flex items-center gap-2 text-xs text-white">
-              <ArrowUpRight className="h-4 w-4" />
-              <span>Open</span>
-            </div>
+            <ArrowUpRight className="h-4 w-4 text-muted-foreground" />
           </div>
         </Link>
 
         <CardContent className={cn('p-5', compact && 'p-4')}>
-          <div className="mb-3 flex items-center gap-2">
-            <Avatar className={cn('h-7 w-7', compact && 'h-6 w-6')}>
-              <AvatarImage src={author.avatar} alt={author.name} />
-              <AvatarFallback>{author.name.charAt(0)}</AvatarFallback>
-            </Avatar>
-            <div className="text-sm text-muted-foreground">
-              <span className="font-medium text-foreground">{author.name}</span>
-              <span className="mx-2">•</span>
-              <span>{bookmark.domain}</span>
-            </div>
+          <div className="mb-3 text-sm text-muted-foreground">
+            <span className="font-medium text-foreground">{author.name}</span>
+            <span className="mx-2">•</span>
+            <span>{bookmark.domain}</span>
           </div>
 
           <Link href={`/sbm/${bookmark.slug}`}>
@@ -138,7 +101,7 @@ export function BookmarkCard({
               {bookmark.title}
             </h3>
           </Link>
-          <p className={cn('mb-4 text-sm text-muted-foreground', compact ? 'line-clamp-2' : 'line-clamp-3')}>
+          <p className={cn('mb-4 text-sm text-muted-foreground')}>
             {bookmark.description}
           </p>
 
@@ -169,10 +132,6 @@ export function BookmarkCard({
               >
                 <Bookmark className={cn('h-4 w-4', isSaved && 'fill-current')} />
                 {saves}
-              </Button>
-              <Button variant="ghost" size="sm" className="gap-2" onClick={handleComments}>
-                <MessageSquare className="h-4 w-4" />
-                {bookmark.commentsCount}
               </Button>
               <Button variant="ghost" size="sm" className="gap-2" onClick={handleShare}>
                 {shareLabel === 'Copied' ? <Check className="h-4 w-4" /> : <Share2 className="h-4 w-4" />}

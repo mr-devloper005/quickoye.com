@@ -5,34 +5,184 @@ import Image from 'next/image'
 import {
   ArrowRight,
   Bookmark,
-  ChevronDown,
   Link2,
   MessageCircle,
   Share2,
-  Sparkles,
   UserRound,
 } from 'lucide-react'
-import { useCallback } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { SITE_CONFIG } from '@/lib/site-config'
 import { requestMarketingAuthOpen } from '@/overrides/marketing-auth-events'
-import { cn } from '@/lib/utils'
+import { BookmarkCard } from '@/components/sbm/bookmark-card'
+import type { Bookmark as BookmarkType } from '@/types'
+import { loadStoredBookmarks } from '@/lib/content-store'
 
 const cream = '#F9F7F2'
 const maroon = '#4A0E1C'
 const accent = '#E8486A'
 
-function NavPill({ label, className }: { label: string; className?: string }) {
+function ProfileCreationVisual() {
   return (
-    <span
-      className={cn(
-        'inline-flex items-center gap-1 rounded-full border border-white/15 bg-white/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-white/90',
-        className,
-      )}
-    >
-      {label}
-      <ChevronDown className="h-3 w-3 opacity-70" aria-hidden />
-    </span>
+    <div className="relative overflow-hidden rounded-[12px] border border-black/8 bg-gradient-to-br from-[#faf8f5] to-[#f0ebe4] shadow-[0_20px_60px_rgba(40,20,24,0.08)]">
+      <div className="aspect-[4/3] w-full p-6">
+        {/* Profile Card Mock */}
+        <div className="mx-auto max-w-[280px] rounded-[14px] border border-black/6 bg-white p-5 shadow-lg">
+          <div className="flex items-center gap-3">
+            <div className="h-14 w-14 rounded-full bg-gradient-to-br from-[#4A0E1C] to-[#E8486A]" />
+            <div className="flex-1">
+              <div className="h-4 w-24 rounded bg-black/10" />
+              <div className="mt-2 h-3 w-32 rounded bg-black/5" />
+            </div>
+          </div>
+          <div className="mt-4 space-y-2">
+            <div className="h-3 w-full rounded bg-black/5" />
+            <div className="h-3 w-4/5 rounded bg-black/5" />
+          </div>
+          <div className="mt-4 flex gap-2">
+            <div className="h-6 w-16 rounded-full bg-[#4A0E1C]/10" />
+            <div className="h-6 w-20 rounded-full bg-[#4A0E1C]/10" />
+          </div>
+        </div>
+        {/* Floating Elements */}
+        <div className="absolute -right-2 top-4 rounded-[10px] border border-black/5 bg-white/90 p-3 shadow-lg backdrop-blur">
+          <div className="flex items-center gap-2">
+            <div className="h-8 w-8 rounded-full bg-[#E8486A]/20" />
+            <div className="h-3 w-20 rounded bg-black/10" />
+          </div>
+        </div>
+        <div className="absolute -left-2 bottom-8 rounded-[10px] border border-black/5 bg-white/90 p-3 shadow-lg backdrop-blur">
+          <div className="flex items-center gap-2">
+            <Bookmark className="h-4 w-4" style={{ color: maroon }} />
+            <div className="h-3 w-16 rounded bg-black/10" />
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function BookmarkSaveVisual() {
+  return (
+    <div className="relative overflow-hidden rounded-[12px] border border-black/8 bg-gradient-to-br from-[#1a0408] to-[#2f0810] shadow-[0_20px_60px_rgba(40,20,24,0.12)]">
+      <div className="aspect-[4/3] w-full p-6">
+        {/* Browser Mock */}
+        <div className="mx-auto max-w-[300px] rounded-[10px] border border-white/10 bg-white/95 p-4 shadow-xl">
+          <div className="flex items-center gap-2 border-b border-black/5 pb-3">
+            <div className="flex gap-1.5">
+              <div className="h-3 w-3 rounded-full bg-[#ff5f57]" />
+              <div className="h-3 w-3 rounded-full bg-[#febc2e]" />
+              <div className="h-3 w-3 rounded-full bg-[#28c840]" />
+            </div>
+            <div className="ml-2 h-6 flex-1 rounded-md bg-black/5" />
+          </div>
+          <div className="mt-4 space-y-3">
+            <div className="h-4 w-3/4 rounded bg-black/10" />
+            <div className="h-3 w-full rounded bg-black/5" />
+            <div className="h-3 w-5/6 rounded bg-black/5" />
+          </div>
+          <div className="mt-4 flex items-center justify-between">
+            <div className="h-8 w-24 rounded-md bg-[#E8486A]" />
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#4A0E1C]">
+              <Bookmark className="h-4 w-4 text-white" />
+            </div>
+          </div>
+        </div>
+        {/* Floating Save Button */}
+        <div className="absolute bottom-6 right-6 rounded-full bg-[#E8486A] px-4 py-2 shadow-lg">
+          <span className="text-sm font-semibold text-white">Save to Quickoye</span>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function ConnectVisual() {
+  return (
+    <div className="relative overflow-hidden rounded-[12px] border border-black/8 bg-gradient-to-br from-[#faf8f5] to-[#f5f0e8] shadow-[0_20px_60px_rgba(40,20,24,0.08)]">
+      <div className="aspect-[4/3] w-full p-6">
+        {/* Network of Profiles */}
+        <div className="relative mx-auto h-full max-w-[280px]">
+          {/* Center Node */}
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-[#4A0E1C] to-[#E8486A] shadow-lg">
+              <UserRound className="h-8 w-8 text-white" />
+            </div>
+          </div>
+          {/* Connected Nodes */}
+          <div className="absolute left-0 top-0">
+            <div className="h-12 w-12 rounded-full border-2 border-white bg-[#f0e8e0] shadow-md" />
+          </div>
+          <div className="absolute right-0 top-4">
+            <div className="h-10 w-10 rounded-full border-2 border-white bg-[#e8e0d8] shadow-md" />
+          </div>
+          <div className="absolute bottom-4 left-2">
+            <div className="h-11 w-11 rounded-full border-2 border-white bg-[#e0d8d0] shadow-md" />
+          </div>
+          <div className="absolute bottom-0 right-4">
+            <div className="h-12 w-12 rounded-full border-2 border-white bg-[#d8d0c8] shadow-md" />
+          </div>
+          {/* Connection Lines SVG */}
+          <svg className="absolute inset-0 h-full w-full" style={{ zIndex: -1 }}>
+            <line x1="50%" y1="50%" x2="10%" y2="15%" stroke="#4A0E1C" strokeWidth="1" strokeOpacity="0.2" />
+            <line x1="50%" y1="50%" x2="90%" y2="20%" stroke="#4A0E1C" strokeWidth="1" strokeOpacity="0.2" />
+            <line x1="50%" y1="50%" x2="15%" y2="75%" stroke="#4A0E1C" strokeWidth="1" strokeOpacity="0.2" />
+            <line x1="50%" y1="50%" x2="85%" y2="80%" stroke="#4A0E1C" strokeWidth="1" strokeOpacity="0.2" />
+          </svg>
+          {/* Share Icons */}
+          <div className="absolute right-2 top-1/2 rounded-full bg-white p-2 shadow-lg">
+            <Share2 className="h-4 w-4" style={{ color: maroon }} />
+          </div>
+          <div className="absolute bottom-8 left-1/2 rounded-full bg-white p-2 shadow-lg">
+            <MessageCircle className="h-4 w-4" style={{ color: maroon }} />
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function FeaturedBookmarksSection() {
+  const [bookmarks, setBookmarks] = useState<BookmarkType[]>([])
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+    // Only load from local storage - no mock data
+    const stored = loadStoredBookmarks()
+    setBookmarks(stored.slice(0, 6))
+  }, [])
+
+  // Don't render anything until mounted to avoid hydration mismatch
+  if (!mounted) {
+    return null
+  }
+
+  // Only show section if there are real bookmarks
+  if (bookmarks.length === 0) {
+    return null
+  }
+
+  return (
+    <section className="border-t border-black/5 bg-white py-16 lg:py-24">
+      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+        <div className="mb-10 flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-black/45">Featured</p>
+            <h2 className="mt-2 text-3xl font-semibold tracking-[-0.03em]">Bookmarks from the community</h2>
+            <p className="mt-2 max-w-xl text-sm text-black/60">Discover what our curators are saving and sharing right now.</p>
+          </div>
+          <Button asChild variant="outline" className="rounded-[10px] border-[#4A0E1C]/25">
+            <Link href="/sbm">Browse all bookmarks</Link>
+          </Button>
+        </div>
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {bookmarks.map((bookmark: BookmarkType) => (
+            <BookmarkCard key={bookmark.id} bookmark={bookmark} />
+          ))}
+        </div>
+      </div>
+    </section>
   )
 }
 
@@ -52,10 +202,7 @@ export function HomeLanding() {
 
         <div className="relative mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-3xl text-center">
-            <div className="flex flex-wrap items-center justify-center gap-2">
-              <NavPill label="Product tour" />
-              <NavPill label="Collections" className="hidden sm:inline-flex" />
-            </div>
+            {/* Nav pills removed as per request */}
             <h1 className="mt-8 text-4xl font-semibold leading-[1.05] tracking-[-0.04em] sm:text-5xl lg:text-6xl">
               Experience smarter profiles, saved links, and a calmer way to stay organized.
             </h1>
@@ -187,21 +334,23 @@ export function HomeLanding() {
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
-              <Button asChild variant="outline" className="rounded-[10px] border-[#4A0E1C]/25 px-6 text-sm font-semibold text-[#4A0E1C]">
-                <Link href="/contact">Contact</Link>
-              </Button>
             </div>
             <ul className="mt-10 space-y-4 text-sm text-black/65">
               {[
-                'Public profile cards with avatar, bio, and bookmark counts',
-                'Collections with tags, domains, and quick revisit flows',
-                'Shareable shelves that read well on desktop and mobile',
-              ].map((item) => (
-                <li key={item} className="flex gap-3">
-                  <Sparkles className="mt-0.5 h-4 w-4 shrink-0" style={{ color: maroon }} />
-                  <span>{item}</span>
-                </li>
-              ))}
+                { text: 'Create your profile', icon: UserRound },
+                { text: 'Save your bookmarks', icon: Bookmark },
+                { text: 'Connect with others', icon: Share2 },
+              ].map((item) => {
+                const Icon = item.icon
+                return (
+                  <li key={item.text} className="flex gap-3 items-center">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#4A0E1C]/10">
+                      <Icon className="h-4 w-4 shrink-0" style={{ color: maroon }} />
+                    </div>
+                    <span>{item.text}</span>
+                  </li>
+                )
+              })}
             </ul>
           </div>
 
@@ -232,7 +381,6 @@ export function HomeLanding() {
               title: 'Create your profile',
               body: 'Tell your story with a focused public profile—avatar, bio, and the topics you curate most.',
               href: '/profile',
-              image: '/placeholder.svg?height=640&width=960',
             },
             {
               step: '02',
@@ -240,7 +388,6 @@ export function HomeLanding() {
               title: 'Save your bookmarks',
               body: 'Capture links with context, tags, and collections so every revisit feels intentional.',
               href: '/sbm',
-              image: '/placeholder.svg?height=640&width=960',
             },
             {
               step: '03',
@@ -248,11 +395,10 @@ export function HomeLanding() {
               title: 'Connect with others',
               body: 'Share shelves, discover curators, and grow a following around the resources you trust.',
               href: '/community',
-              image: '/placeholder.svg?height=640&width=960',
             },
-          ].map((block) => (
+          ].map((block, index) => (
             <div key={block.step} className="grid gap-10 lg:grid-cols-2 lg:items-center">
-              <div>
+              <div className={index === 1 ? 'lg:order-2' : ''}>
                 <p className="text-7xl font-semibold leading-none text-black/[0.07] sm:text-8xl">{block.step}</p>
                 <p className="mt-2 text-xs font-semibold uppercase tracking-[0.24em] text-black/45">
                   {block.step} /{block.total}
@@ -264,32 +410,18 @@ export function HomeLanding() {
                   <ArrowRight className="h-4 w-4" />
                 </Link>
               </div>
-              <div className="relative overflow-hidden rounded-[12px] border border-black/8 bg-[#f4f1ec] shadow-[0_20px_60px_rgba(40,20,24,0.08)]">
-                <div className="relative aspect-[4/3] w-full">
-                  <Image
-                    src={block.image}
-                    alt={`${block.title} preview`}
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 1024px) 100vw, 50vw"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-transparent" />
-                </div>
-                <div className="absolute bottom-4 left-4 right-4 rounded-[10px] border border-white/40 bg-white/90 p-4 shadow-lg backdrop-blur">
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-black/45">Live surface</p>
-                  <p className="text-sm font-semibold text-[#1f1418]">
-                    {block.step === '01'
-                      ? 'Profile preview'
-                      : block.step === '02'
-                        ? 'Collection shelf'
-                        : 'Community spotlight'}
-                  </p>
-                </div>
+              <div className={index === 1 ? 'lg:order-1' : ''}>
+                {block.step === '01' && <ProfileCreationVisual />}
+                {block.step === '02' && <BookmarkSaveVisual />}
+                {block.step === '03' && <ConnectVisual />}
               </div>
             </div>
           ))}
         </div>
       </section>
+
+      {/* Featured Bookmarks Section */}
+      <FeaturedBookmarksSection />
 
       <section className="border-t border-black/5 py-16" style={{ backgroundColor: cream }}>
         <div className="mx-auto flex max-w-5xl flex-col items-center gap-6 px-4 text-center sm:px-6 lg:px-8">

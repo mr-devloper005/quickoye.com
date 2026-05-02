@@ -7,8 +7,8 @@ import type { SitePost } from '@/lib/site-connector'
 import type { TaskKey } from '@/lib/site-config'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
-import { ThumbsUp, MessageCircle, Share2, Eye, MapPin, Globe, Mail, Phone, Tag, ArrowLeft, Clock } from 'lucide-react'
-import { useState } from 'react'
+import { ThumbsUp, Share2, Eye, MapPin, Globe, Mail, Phone, Tag, ArrowLeft } from 'lucide-react'
+import { useState, useEffect } from 'react'
 
 interface ProfileDetailPageProps {
   task: TaskKey
@@ -22,21 +22,6 @@ interface ProfileDetailPageProps {
   related: SitePost[]
 }
 
-function getTimeAgo(dateString?: string | Date): string {
-  if (!dateString) return 'Recently'
-  const date = new Date(dateString)
-  const now = new Date()
-  const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000)
-
-  if (diffInSeconds < 60) return 'Just now'
-  if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)}m ago`
-  if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)}h ago`
-  if (diffInSeconds < 604800) return `${Math.floor(diffInSeconds / 86400)}d ago`
-  if (diffInSeconds < 2592000) return `${Math.floor(diffInSeconds / 604800)}w ago`
-  if (diffInSeconds < 31536000) return `${Math.floor(diffInSeconds / 2592000)}mo ago`
-  return `${Math.floor(diffInSeconds / 31536000)}y ago`
-}
-
 function stripHtml(html: string): string {
   return html
     .replace(/<style[^>]*>.*?<\/style>/gi, '')
@@ -46,10 +31,8 @@ function stripHtml(html: string): string {
     .trim()
 }
 
-function getExcerpt(text: string, maxLength: number = 280): string {
-  const clean = stripHtml(text)
-  if (clean.length <= maxLength) return clean
-  return clean.slice(0, maxLength).trimEnd() + '…'
+function getFullText(text: string): string {
+  return stripHtml(text)
 }
 
 export function ProfileDetailPage({
@@ -65,7 +48,11 @@ export function ProfileDetailPage({
 }: ProfileDetailPageProps) {
   const [likes, setLikes] = useState(0)
   const [isLiked, setIsLiked] = useState(false)
-  const [views] = useState(Math.floor(Math.random() * 500) + 50)
+  const [views, setViews] = useState(0)
+
+  useEffect(() => {
+    setViews(Math.floor(Math.random() * 500) + 50)
+  }, [])
 
   const content = post.content && typeof post.content === 'object' ? (post.content as Record<string, unknown>) : {}
   const location = typeof content.address === 'string' ? content.address : typeof content.location === 'string' ? content.location : ''
@@ -75,8 +62,10 @@ export function ProfileDetailPage({
   const highlights = Array.isArray(content.highlights) ? content.highlights.filter((item): item is string => typeof item === 'string') : []
 
   const handleLike = () => {
-    setIsLiked(!isLiked)
-    setLikes(isLiked ? likes - 1 : likes + 1)
+    // Redirect to login for liking
+    if (typeof window !== 'undefined') {
+      window.location.href = '/login'
+    }
   }
 
   const handleShare = async () => {
@@ -84,7 +73,7 @@ export function ProfileDetailPage({
       try {
         await navigator.share({
           title: post.title,
-          text: getExcerpt(description, 100),
+          text: getFullText(description).slice(0, 100),
           url: window.location.href,
         })
       } catch {
@@ -111,18 +100,17 @@ export function ProfileDetailPage({
         <article className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
           {/* Card Header - Profile Info */}
           <div className="flex items-center gap-3 border-b border-slate-100 px-5 py-4">
-            <Avatar className="h-12 w-12 ring-2 ring-slate-100">
-              <AvatarImage src={images[0] || ''} alt={post.title} />
-              <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white text-lg">
-                {post.title?.charAt(0).toUpperCase() || 'P'}
-              </AvatarFallback>
-            </Avatar>
+            {task !== 'sbm' && (
+              <Avatar className="h-12 w-12 ring-2 ring-slate-100">
+                <AvatarImage src={images[0] || ''} alt={post.title} />
+                <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white text-lg">
+                  {post.title?.charAt(0).toUpperCase() || 'P'}
+                </AvatarFallback>
+              </Avatar>
+            )}
             <div className="flex-1">
               <h1 className="text-base font-semibold text-slate-900">{post.title}</h1>
               <div className="flex items-center gap-2 text-xs text-slate-500">
-                <Clock className="h-3 w-3" />
-                <span>{getTimeAgo(post.publishedAt || post.createdAt || undefined)}</span>
-                <span className="text-slate-300">•</span>
                 <span className="inline-flex items-center gap-1 text-blue-600">
                   <Tag className="h-3 w-3" />
                   {category}
@@ -138,17 +126,10 @@ export function ProfileDetailPage({
               {post.title}
             </h2>
 
-            {/* Description */}
-            <p className="mt-3 text-[15px] leading-7 text-slate-600">
-              {getExcerpt(description, 400)}
+            {/* Full Description */}
+            <p className="mt-3 whitespace-pre-wrap text-[15px] leading-7 text-slate-600">
+              {getFullText(description)}
             </p>
-
-            {/* Read More Link */}
-            {description.length > 400 && (
-              <button className="mt-2 text-sm font-medium text-blue-600 hover:text-blue-700 hover:underline">
-                Read More
-              </button>
-            )}
 
             {/* Contact Info Grid */}
             <div className="mt-5 grid gap-2">
@@ -204,8 +185,8 @@ export function ProfileDetailPage({
             )}
           </div>
 
-          {/* Image Gallery */}
-          {images.length > 0 && (
+          {/* Image Gallery - Hidden for SBM */}
+          {task !== 'sbm' && images.length > 0 && (
             <div className="border-t border-slate-100">
               <div className="relative aspect-[16/9] overflow-hidden bg-slate-100">
                 <ContentImage
@@ -271,14 +252,6 @@ export function ProfileDetailPage({
                 </span>
               </Button>
 
-              <Button
-                variant="ghost"
-                size="sm"
-                className="flex items-center gap-2 rounded-full px-4 text-slate-600 hover:bg-slate-100"
-              >
-                <MessageCircle className="h-4 w-4" />
-                <span className="text-sm font-medium">Comment</span>
-              </Button>
 
               <Button
                 variant="ghost"

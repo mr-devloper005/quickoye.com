@@ -8,42 +8,28 @@ import { SITE_CONFIG } from '@/lib/site-config'
 
 const roles = [
   {
-    title: 'Product Designer',
+    title: 'No open positions currently',
     location: 'Remote',
-    type: 'Full-time',
-    level: 'Mid',
-    focus: 'Design bookmark cards, profile shells, and onboarding that feel editorial, not administrative.',
-  },
-  {
-    title: 'Frontend Engineer',
-    location: 'New York, NY',
-    type: 'Full-time',
-    level: 'Senior',
-    focus: 'Ship accessible, performant surfaces for feeds, collections, and identity—mostly in React + Next.js.',
-  },
-  {
-    title: 'Community Lead',
-    location: 'Remote',
-    type: 'Part-time',
-    level: 'Mid',
-    focus: 'Grow curator programs, host office hours, and translate feedback into crisp product narratives.',
+    type: 'Check back soon',
+    level: 'N/A',
+    focus: 'We are not actively hiring at the moment. If you are passionate about social bookmarking and profiles, feel free to reach out—we keep interesting profiles on file.',
   },
 ]
 
 const benefits = [
-  'Remote-first team with intentional overlap hours',
-  'Health stipend and annual learning budget',
-  'Quarterly in-person retreats for design and roadmap',
-  'Stipend for books, courses, and museum passes (curiosity is part of the job)',
+  'Small, focused team building something useful',
+  'Remote-friendly environment',
+  'Opportunity to shape a growing platform',
+  'Curiosity and good taste valued over credentials',
 ]
 
 export default function CareersPage() {
   return (
     <MarketingPublicShell
-      eyebrow="Company"
-      title="Careers at the intersection of identity and curation"
-      description={`Join ${SITE_CONFIG.name} as we craft the next generation of profile-led bookmarking—fewer feeds, more meaning.`}
-      actions={<MarketingCtaRow primary={{ href: '/contact', label: 'Talk with us' }} secondary={{ href: '/about', label: 'Our story' }} />}
+      eyebrow="Careers"
+      title="Work with us"
+      description={`${SITE_CONFIG.name} is a small team building tools for people who live in links. When we do hire, we look for curiosity, taste, and a genuine love for the open web.`}
+      actions={<MarketingCtaRow primary={{ href: '/contact', label: 'Get in touch' }} secondary={{ href: '/about', label: 'About us' }} />}
     >
       <div className="grid gap-10 lg:grid-cols-[1.15fr_0.85fr]">
         <div className="space-y-5">
@@ -69,10 +55,10 @@ export default function CareersPage() {
 
         <MarketingSurfaceCard className="h-fit lg:sticky lg:top-28">
           <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-black/45">Why join</p>
-          <h3 className="mt-3 text-xl font-semibold text-[#1f1418]">We optimize for taste</h3>
+          <h3 className="mt-3 text-xl font-semibold text-[#1f1418]">Build something meaningful</h3>
           <p className="mt-3 text-sm leading-relaxed text-black/60">
-            You will work on problems that reward restraint: how much metadata is enough, how profiles earn trust, and how collections stay
-            legible after hundreds of saves.
+            Quickoye is a side project with ambition. We are creating a calmer space for bookmarks and profiles—
+            a place where curation matters more than algorithms.
           </p>
           <ul className="mt-6 space-y-3 text-sm text-black/65">
             {benefits.map((benefit) => (
