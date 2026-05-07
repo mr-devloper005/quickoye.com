@@ -138,17 +138,19 @@ function getCurationTone() {
   }
 }
 
-function DirectoryHome({ primaryTask, enabledTasks, listingPosts, classifiedPosts, profilePosts, brandPack }: {
+function DirectoryHome({ primaryTask, enabledTasks, listingPosts, classifiedPosts, profilePosts, bookmarkPosts, brandPack }: {
   primaryTask?: EnabledTask
   enabledTasks: EnabledTask[]
   listingPosts: SitePost[]
   classifiedPosts: SitePost[]
   profilePosts: SitePost[]
+  bookmarkPosts: SitePost[]
   brandPack: string
 }) {
   const tone = getDirectoryTone(brandPack)
   const featuredListings = (listingPosts.length ? listingPosts : classifiedPosts).slice(0, 3)
   const featuredTaskKey: TaskKey = listingPosts.length ? 'listing' : 'classified'
+  const featuredBookmarks = bookmarkPosts.slice(0, 3)
   const quickRoutes = enabledTasks.slice(0, 4)
 
   return (
@@ -232,6 +234,25 @@ function DirectoryHome({ primaryTask, enabledTasks, listingPosts, classifiedPost
           ))}
         </div>
       </section>
+
+      {featuredBookmarks.length ? (
+        <section className={tone.shell}>
+          <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
+            <div className="flex items-end justify-between gap-4 border-b border-black/10 pb-6">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.24em] opacity-70">Saved collections</p>
+                <h2 className="mt-3 text-3xl font-semibold tracking-[-0.04em]">Bookmarks that stay clean, grouped, and easy to revisit.</h2>
+              </div>
+              <Link href="/sbm" className="text-sm font-semibold hover:opacity-80">Open bookmarks</Link>
+            </div>
+            <div className="mt-8 grid gap-6 lg:grid-cols-3">
+              {featuredBookmarks.map((post) => (
+                <TaskPostCard key={post.id} post={post} href={getTaskHref('sbm', post.slug)} taskKey="sbm" />
+              ))}
+            </div>
+          </div>
+        </section>
+      ) : null}
 
       <section className={`${tone.shell}`}>
         <div className="mx-auto grid max-w-7xl gap-8 px-4 py-14 sm:px-6 lg:grid-cols-[0.92fr_1.08fr] lg:px-8">
@@ -531,6 +552,7 @@ export default async function HomePage() {
           listingPosts={listingPosts}
           classifiedPosts={classifiedPosts}
           profilePosts={profilePosts}
+          bookmarkPosts={bookmarkPosts}
           brandPack={recipe.brandPack}
         />
       ) : null}
