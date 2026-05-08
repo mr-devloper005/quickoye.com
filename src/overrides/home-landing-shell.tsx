@@ -3,11 +3,9 @@ import { Footer } from '@/components/shared/footer'
 import { SchemaJsonLd } from '@/components/seo/schema-jsonld'
 import { SITE_CONFIG } from '@/lib/site-config'
 import { HomeLanding } from '@/overrides/home-landing'
-import { fetchTaskPosts } from '@/lib/task-data'
 
-export async function HomeLandingShell() {
+export function HomeLandingShell() {
   const base = SITE_CONFIG.baseUrl.replace(/\/$/, '')
-  const bookmarkPosts = await fetchTaskPosts('sbm', 6, { allowMockFallback: true, fresh: true })
   const schemaData = [
     {
       '@context': 'https://schema.org',
@@ -34,7 +32,7 @@ export async function HomeLandingShell() {
     <div className="min-h-screen bg-[#F9F7F2] text-[#2a181c]">
       <NavbarShell />
       <SchemaJsonLd data={schemaData} />
-      <HomeLanding initialBookmarkPosts={bookmarkPosts} />
+      <HomeLanding />
       <Footer />
     </div>
   )

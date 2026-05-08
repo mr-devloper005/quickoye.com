@@ -3,7 +3,6 @@
 import Link from 'next/link'
 import { ContentImage } from '@/components/shared/content-image'
 import { TaskPostCard } from '@/components/shared/task-post-card'
-import { RichContent, formatRichHtml } from '@/components/shared/rich-content'
 import type { SitePost } from '@/lib/site-connector'
 import type { TaskKey } from '@/lib/site-config'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
@@ -128,10 +127,9 @@ export function ProfileDetailPage({
             </h2>
 
             {/* Full Description */}
-            <RichContent
-              html={formatRichHtml(description, 'Details coming soon.')}
-              className="mt-3 text-[15px] leading-7 text-slate-600 prose-p:my-0 prose-a:text-blue-600 prose-a:hover:text-blue-700"
-            />
+            <p className="mt-3 whitespace-pre-wrap text-[15px] leading-7 text-slate-600">
+              {getFullText(description)}
+            </p>
 
             {/* Contact Info Grid */}
             <div className="mt-5 grid gap-2">

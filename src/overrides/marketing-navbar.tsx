@@ -95,6 +95,7 @@ export function MarketingNavbar() {
         label: 'Resources',
         items: [
           { label: 'Help center', href: '/help', hint: 'Guides and answers' },
+          { label: 'Community', href: '/community', hint: 'Meet other curators' },
           { label: 'Status', href: '/status', hint: 'Uptime and incidents' },
         ],
       },
