@@ -51,8 +51,10 @@ export default function DashboardSavedPage() {
   const [storedArticles, setStoredArticles] = useState<Article[]>([])
   const [storedListings, setStoredListings] = useState<Listing[]>([])
   const [storedAds, setStoredAds] = useState<ClassifiedAd[]>([])
+  const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
+    setMounted(true)
     setSavedIds(loadFromStorage<string[]>(storageKeys.bookmarkSaves, defaultSavedBookmarkIds))
     setSavedArticleIds(loadFromStorage<string[]>(storageKeys.articleSaves, []))
     setSavedListingIds(loadFromStorage<string[]>(storageKeys.listingSaves, []))
@@ -156,6 +158,18 @@ export default function DashboardSavedPage() {
     const nextIds = savedAdIds.filter((savedId) => savedId !== id)
     setSavedAdIds(nextIds)
     saveToStorage(storageKeys.adSaves, nextIds)
+  }
+
+  if (!mounted) {
+    return (
+      <PageShell title="Saved Items" description="All the links and articles you have bookmarked.">
+        <div className="space-y-4">
+          <Card className="border-border bg-card">
+            <CardContent className="p-6 text-sm text-muted-foreground">Loading saved items...</CardContent>
+          </Card>
+        </div>
+      </PageShell>
+    )
   }
 
   const handleBulkAdAction = (action: string) => {
