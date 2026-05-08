@@ -33,6 +33,7 @@ const footerLinks = {
   ],
   resources: [
     { name: 'Help Center', href: '/help' },
+    { name: 'Community', href: '/community' },
     { name: 'Developers', href: '/developers' },
     { name: 'Status', href: '/status' },
   ],

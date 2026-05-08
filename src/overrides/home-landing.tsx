@@ -14,8 +14,9 @@ import { useCallback, useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { SITE_CONFIG } from '@/lib/site-config'
 import { requestMarketingAuthOpen } from '@/overrides/marketing-auth-events'
-import { TaskPostCard } from '@/components/shared/task-post-card'
-import type { SitePost } from '@/lib/site-connector'
+import { BookmarkCard } from '@/components/sbm/bookmark-card'
+import type { Bookmark as BookmarkType } from '@/types'
+import { loadStoredBookmarks } from '@/lib/content-store'
 
 const cream = '#F9F7F2'
 const maroon = '#4A0E1C'
@@ -141,7 +142,27 @@ function ConnectVisual() {
   )
 }
 
-function FeaturedBookmarksSection({ posts }: { posts: SitePost[] }) {
+function FeaturedBookmarksSection() {
+  const [bookmarks, setBookmarks] = useState<BookmarkType[]>([])
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+    // Only load from local storage - no mock data
+    const stored = loadStoredBookmarks()
+    setBookmarks(stored.slice(0, 6))
+  }, [])
+
+  // Don't render anything until mounted to avoid hydration mismatch
+  if (!mounted) {
+    return null
+  }
+
+  // Only show section if there are real bookmarks
+  if (bookmarks.length === 0) {
+    return null
+  }
+
   return (
     <section className="border-t border-black/5 bg-white py-16 lg:py-24">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
@@ -149,17 +170,15 @@ function FeaturedBookmarksSection({ posts }: { posts: SitePost[] }) {
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.24em] text-black/45">Featured</p>
             <h2 className="mt-2 text-3xl font-semibold tracking-[-0.03em]">Bookmarks from the community</h2>
-            <p className="mt-2 max-w-xl text-sm text-black/60">
-              Discover what our curators are saving and sharing right now.
-            </p>
+            <p className="mt-2 max-w-xl text-sm text-black/60">Discover what our curators are saving and sharing right now.</p>
           </div>
-          <Link href="/sbm" className="text-sm font-semibold text-[#4A0E1C] hover:underline">
-            Browse all bookmarks
-          </Link>
+          <Button asChild variant="outline" className="rounded-[10px] border-[#4A0E1C]/25">
+            <Link href="/sbm">Browse all bookmarks</Link>
+          </Button>
         </div>
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {posts.slice(0, 6).map((post) => (
-            <TaskPostCard key={post.id} post={post} href={`/sbm/${post.slug}`} taskKey="sbm" />
+          {bookmarks.map((bookmark: BookmarkType) => (
+            <BookmarkCard key={bookmark.id} bookmark={bookmark} />
           ))}
         </div>
       </div>
@@ -167,7 +186,7 @@ function FeaturedBookmarksSection({ posts }: { posts: SitePost[] }) {
   )
 }
 
-export function HomeLanding({ initialBookmarkPosts }: { initialBookmarkPosts: SitePost[] }) {
+export function HomeLanding() {
   const openAuth = useCallback(() => requestMarketingAuthOpen(), [])
 
   return (
@@ -299,8 +318,6 @@ export function HomeLanding({ initialBookmarkPosts }: { initialBookmarkPosts: Si
         </div>
       </section>
 
-
-
       <section className="py-16 lg:py-24" style={{ backgroundColor: cream }}>
         <div className="mx-auto grid max-w-6xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-[1fr_1fr] lg:px-8">
           <div>
@@ -404,7 +421,7 @@ export function HomeLanding({ initialBookmarkPosts }: { initialBookmarkPosts: Si
       </section>
 
       {/* Featured Bookmarks Section */}
-      {initialBookmarkPosts.length ? <FeaturedBookmarksSection posts={initialBookmarkPosts} /> : null}
+      <FeaturedBookmarksSection />
 
       <section className="border-t border-black/5 py-16" style={{ backgroundColor: cream }}>
         <div className="mx-auto flex max-w-5xl flex-col items-center gap-6 px-4 text-center sm:px-6 lg:px-8">
