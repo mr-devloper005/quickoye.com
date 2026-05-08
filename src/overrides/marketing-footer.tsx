@@ -25,7 +25,6 @@ const columns = [
     title: 'Resources',
     links: [
       { label: 'Help center', href: '/help' },
-      { label: 'Community', href: '/community' },
       { label: 'Status', href: '/status' },
     ],
   },
