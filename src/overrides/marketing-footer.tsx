@@ -8,7 +8,6 @@ const columns = [
   {
     title: 'Product',
     links: [
-      { label: 'Profiles', href: '/profile', icon: UserRound },
       { label: 'Social bookmarking', href: '/sbm', icon: Bookmark },
       { label: 'Submit a link', href: '/sbm/submit', icon: Sparkles },
     ],

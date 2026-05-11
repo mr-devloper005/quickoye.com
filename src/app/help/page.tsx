@@ -44,12 +44,9 @@ export default function HelpPage() {
       <div className="grid gap-10 lg:grid-cols-[1.05fr_0.95fr]">
         <div className="grid gap-5 sm:grid-cols-2">
           {guides.map((guide) => (
-            <MarketingSurfaceCard key={guide.title} className="flex flex-col p-5 sm:p-6">
+            <MarketingSurfaceCard key={guide.title} className="p-5 sm:p-6">
               <h2 className="text-lg font-semibold text-[#1f1418]">{guide.title}</h2>
-              <p className="mt-2 flex-1 text-sm leading-relaxed text-black/60">{guide.description}</p>
-              <Button variant="link" className="mt-4 h-auto justify-start p-0 text-sm font-semibold" style={{ color: marketingTheme.maroon }} asChild>
-                <Link href={guide.href}>{guide.cta} →</Link>
-              </Button>
+              <p className="mt-2 text-sm leading-relaxed text-black/60">{guide.description}</p>
             </MarketingSurfaceCard>
           ))}
         </div>
