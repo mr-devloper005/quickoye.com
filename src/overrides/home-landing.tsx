@@ -310,17 +310,8 @@ export function HomeLanding({ initialBookmarkPosts }: { initialBookmarkPosts: Si
               Present who you are, save what you learn, and give others a clean surface to follow your collections—without unrelated
               marketplace clutter.
             </p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Button asChild className="rounded-[10px] px-6 text-sm font-semibold text-white" style={{ backgroundColor: maroon }}>
-                <Link href="/profile">
-                  Explore profiles
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
-              </Button>
-            </div>
             <ul className="mt-10 space-y-4 text-sm text-black/65">
               {[
-                { text: 'Create your profile', icon: UserRound },
                 { text: 'Save your bookmarks', icon: Bookmark },
                 { text: 'Connect with others', icon: Share2 },
               ].map((item) => {
@@ -360,28 +351,21 @@ export function HomeLanding({ initialBookmarkPosts }: { initialBookmarkPosts: Si
           {[
             {
               step: '01',
-              total: '03',
-              title: 'Create your profile',
-              body: 'Tell your story with a focused public profile—avatar, bio, and the topics you curate most.',
-              href: '/profile',
-            },
-            {
-              step: '02',
-              total: '03',
+              total: '02',
               title: 'Save your bookmarks',
               body: 'Capture links with context, tags, and collections so every revisit feels intentional.',
               href: '/sbm',
             },
             {
-              step: '03',
-              total: '03',
+              step: '02',
+              total: '02',
               title: 'Connect with others',
               body: 'Share shelves, discover curators, and grow a following around the resources you trust.',
               href: '/community',
             },
           ].map((block, index) => (
             <div key={block.step} className="grid gap-10 lg:grid-cols-2 lg:items-center">
-              <div className={index === 1 ? 'lg:order-2' : ''}>
+              <div className={index === 0 ? '' : 'lg:order-2'}>
                 <p className="text-7xl font-semibold leading-none text-black/[0.07] sm:text-8xl">{block.step}</p>
                 <p className="mt-2 text-xs font-semibold uppercase tracking-[0.24em] text-black/45">
                   {block.step} /{block.total}
@@ -393,10 +377,9 @@ export function HomeLanding({ initialBookmarkPosts }: { initialBookmarkPosts: Si
                   <ArrowRight className="h-4 w-4" />
                 </Link>
               </div>
-              <div className={index === 1 ? 'lg:order-1' : ''}>
-                {block.step === '01' && <ProfileCreationVisual />}
-                {block.step === '02' && <BookmarkSaveVisual />}
-                {block.step === '03' && <ConnectVisual />}
+              <div className={index === 0 ? '' : 'lg:order-1'}>
+                {block.step === '01' && <BookmarkSaveVisual />}
+                {block.step === '02' && <ConnectVisual />}
               </div>
             </div>
           ))}
@@ -420,9 +403,6 @@ export function HomeLanding({ initialBookmarkPosts }: { initialBookmarkPosts: Si
               onClick={openAuth}
             >
               Open account
-            </Button>
-            <Button asChild variant="outline" className="rounded-[10px] border-[#4A0E1C]/25 px-8 text-sm font-semibold text-[#4A0E1C]">
-              <Link href="/register">Create profile</Link>
             </Button>
           </div>
         </div>

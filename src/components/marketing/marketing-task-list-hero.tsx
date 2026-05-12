@@ -22,7 +22,6 @@ const copy: Partial<
     headline: 'Collections built for deep work',
     body: 'Saved links with context, calmer cards, and filters that help you scan by category instead of chasing an endless feed.',
     cta: { href: '/sbm/submit', label: 'Submit a bookmark' },
-    secondary: { href: '/profile', label: 'View profiles' },
   },
   social: {
     label: 'Community',

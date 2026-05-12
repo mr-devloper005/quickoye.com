@@ -53,8 +53,7 @@ export default function StatusPage() {
         <div className="mt-6 space-y-4">
           {incidents.map((incident) => (
             <div key={incident.title} className="rounded-[10px] border border-black/8 bg-[#faf8f5] px-4 py-4">
-              <div className="text-xs font-semibold uppercase tracking-wide text-black/45">{incident.date}</div>
-              <div className="mt-1 text-sm font-semibold text-[#1f1418]">{incident.title}</div>
+              <div className="text-sm font-semibold text-[#1f1418]">{incident.title}</div>
               <p className="mt-1 text-sm text-black/55">{incident.detail}</p>
               <div className="mt-2 text-xs font-medium text-black/45">{incident.status}</div>
             </div>

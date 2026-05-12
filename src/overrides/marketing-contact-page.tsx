@@ -48,31 +48,6 @@ export function MarketingContactPage() {
               <p className="mt-2 text-sm leading-relaxed text-black/60">{lane.body}</p>
             </MarketingSurfaceCard>
           ))}
-          <div className="rounded-[12px] border border-dashed border-black/15 bg-[#faf8f5] p-5 text-sm text-black/60">
-            <div className="flex flex-wrap items-start justify-between gap-3">
-              <p className="font-medium text-[#1f1418]">Prefer email?</p>
-              <Link
-                href={mailtoHref}
-                className="inline-flex items-center justify-center rounded-[10px] border border-black/10 bg-white px-4 py-2 text-sm font-semibold text-[#1f1418] shadow-sm hover:bg-black/[0.02]"
-              >
-                Email us
-              </Link>
-            </div>
-            <p className="mt-1">
-              Write to{' '}
-              <a
-                className="font-semibold underline decoration-[#4A0E1C]/40 underline-offset-2"
-                style={{ color: marketingTheme.maroon }}
-                href={mailtoHref}
-              >
-                {primaryEmail}
-              </a>{' '}
-              with context, links, and what outcome you need—we reply within two business days.
-            </p>
-            {emails.length > 1 ? (
-              <p className="mt-3 text-xs text-black/55">Other inboxes: {emails.slice(1).join(', ')}</p>
-            ) : null}
-          </div>
         </div>
 
         <div className="space-y-6">

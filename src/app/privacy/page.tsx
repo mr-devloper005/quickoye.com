@@ -40,9 +40,7 @@ export default function PrivacyPage() {
       actions={<MarketingCtaRow primary={{ href: '/contact', label: 'Privacy questions' }} secondary={{ href: '/cookies', label: 'Cookie policy' }} />}
     >
       <MarketingSurfaceCard className="p-6 sm:p-8">
-        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-black/45">Last updated</p>
-        <p className="mt-1 text-sm text-black/60">April 21, 2026</p>
-        <div className="mt-8 space-y-6">
+        <div className="space-y-6">
           {sections.map((section) => (
             <div key={section.title} className="rounded-[10px] border border-black/8 bg-[#faf8f5] p-5">
               <h3 className="text-base font-semibold text-[#1f1418]">{section.title}</h3>
