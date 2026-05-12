@@ -17,10 +17,7 @@ const nextConfig = {
       { protocol: "http", hostname: "**" },
     ],
   },
-  turbopack: {
-    root: __dirname,
-  },
-  async headers() {
+    async headers() {
     return [
       {
         source: "/(.*)",
